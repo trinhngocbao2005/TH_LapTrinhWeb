@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+:root {
+    --primary: #0f172a;
+    --primary-light: #1e293b;
+    --accent: #f43f5e;
+    --accent-hover: #e11d48;
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+.navbar {
+    background-color: var(--primary) !important;
+    padding: 1.25rem 0;
+    transition: var(--transition);
+    z-index: 1000;
+}
+
+.navbar.navbar-scrolled {
+    padding: 0.75rem 0;
+    background-color: rgba(15, 23, 42, 0.95) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-lg);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+.hero-section {
+    position: relative;
+    background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    padding: 160px 0;
+    margin-bottom: 0 !important;
+}
+
+.hero-slider .carousel-item {
+    height: 600px;
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-slider .carousel-caption {
+    bottom: 25%;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.product-card {
+    transition: var(--transition);
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+}
+
+.product-card:hover {
+    transform: translateY(-12px);
+    box-shadow: var(--shadow-xl) !important;
+}
+
+.product-card .img-wrapper {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+}
+
+.product-card img {
+    transition: transform 0.8s cubic-bezier(0.2, 0, 0.2, 1);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-card:hover img {
+    transform: scale(1.1);
+}
+
+.product-card .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition);
+    backdrop-filter: blur(4px);
+}
+
+.product-card:hover .overlay {
+    opacity: 1;
+}
+
+.overlay-btns {
+    transform: translateY(20px);
+    transition: var(--transition);
+}
+
+.product-card:hover .overlay-btns {
+    transform: translateY(0);
+}
+
+.card-title {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.text-danger {
+    color: var(--accent) !important;
+}
+
+.btn-primary {
+    background-color: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px 24px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+}
+
+.btn-outline-light {
+    border-radius: var(--radius-sm);
+    padding: 10px 20px;
+    font-weight: 600;
+    backdrop-filter: blur(5px);
+}
+
+/* Button Ripple Effect */
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform .5s, opacity 1s;
+}
+
+.ripple:active::after {
+    transform: scale(0, 0);
+    opacity: .3;
+    transition: 0s;
+}
+
+.sidebar {
+    border-radius: var(--radius-md) !important;
+    border: none;
+    box-shadow: var(--shadow-md);
+    background: var(--bg-card) !important;
+}
+
+.social-links a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+    border-radius: var(--radius-sm);
+}
+
+.social-links a:hover {
+    color: var(--accent);
+    background: rgba(244, 63, 94, 0.05);
+    transform: translateX(5px);
+}
+
+.social-links i {
+    width: 35px;
+    font-size: 1.25rem;
+    color: var(--text-muted);
+}
+
+.social-links a:hover i {
+    color: var(--accent);
+}
+
+footer {
+    background-color: var(--primary) !important;
+    border-top: 5px solid var(--accent);
+}
+
+.hover-link {
+    transition: var(--transition);
+}
+
+.hover-link:hover {
+    color: var(--accent) !important;
+    padding-left: 8px;
+}
+
+/* Sections */
+.section-title {
+    position: relative;
+    padding-bottom: 15px;
+    margin-bottom: 40px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 2px;
+}
+
+.section-title.text-start::after {
+    left: 0;
+    transform: none;
+}
