@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NGOCBAO CAMERA STUDIO</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebsiteBanHang.styles.css" asp-append-version="true" />
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme') || 'light';
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div class="bg-glow-blob-1"></div>
+    <div class="bg-glow-blob-2"></div>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-premium navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Product" asp-action="Index">
+                    <i class="fa-solid fa-camera-retro"></i> NGOCBAO <span>STUDIO</span>
+                </a>
+                
+                <!-- Search bar for Desktop -->
+                <form class="search-form d-none d-lg-block ms-4" asp-controller="Product" asp-action="Index" method="get">
+                    <input type="text" name="searchString" class="form-control search-input" placeholder="Tìm kiếm máy ảnh... (Bấm '/')" value="@ViewBag.SearchString" />
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                </form>
+
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto gap-2 align-items-lg-center">
+                        <!-- Search input for Mobile -->
+                        <li class="nav-item d-lg-none mt-2">
+                            <form class="search-form" asp-controller="Product" asp-action="Index" method="get">
+                                <input type="text" name="searchString" class="form-control search-input" placeholder="Tìm kiếm máy ảnh..." value="@ViewBag.SearchString" />
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            </form>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Product" asp-action="Index">
+                                <i class="fa-solid fa-images me-1"></i> Trang chủ sản phẩm
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Category" asp-action="Index">
+                                <i class="fa-solid fa-folder-open me-1"></i> Quản lý danh mục
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Product" asp-action="Index">
+                                <i class="fa-solid fa-sliders me-1"></i> Quản lý máy ảnh
+                            </a>
+                        </li>
+                        
+                        <!-- Theme Toggle trigger -->
+                        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                            <div class="theme-toggle-trigger" onclick="toggleTheme()" title="Chuyển chế độ sáng/tối">
+                                <i class="fa-solid fa-moon theme-icon-dark"></i>
+                                <i class="fa-solid fa-sun theme-icon-light d-none"></i>
+                            </div>
+                        </li>
+                        
+                        <!-- Cart trigger -->
+                        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                            <div class="cart-trigger" onclick="toggleCart(true)" title="Xem giỏ hàng">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                                <span class="cart-badge" id="cart-badge-count">0</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container my-5">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Slide-out Cart Drawer -->
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart(false)"></div>
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-drawer-header">
+            <h5 class="mb-0"><i class="fa-solid fa-bag-shopping text-danger me-2"></i>Giỏ hàng của bạn</h5>
+            <button class="btn-close" onclick="toggleCart(false)"></button>
+        </div>
+        <div class="cart-drawer-body" id="cart-items-container">
+            <!-- Loaded dynamically via Ajax -->
+            <div class="text-center text-muted my-5">
+                <i class="fa-solid fa-cart-flatbed-suitcase fs-2 mb-3 text-secondary"></i>
+                <p class="small">Giỏ hàng của bạn đang trống</p>
+            </div>
+        </div>
+        <div class="cart-drawer-footer">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted small">Tổng thanh toán:</span>
+                <span class="price-tag fs-4" id="cart-total-price">0đ</span>
+            </div>
+            <button class="btn btn-premium-primary w-100 py-2.5" onclick="checkoutAlert()">
+                <i class="fa-solid fa-credit-card me-2"></i> Tiến hành đặt hàng
+            </button>
+        </div>
+    </div>
+
+    <footer class="footer-premium text-muted">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="mb-3"><i class="fa-solid fa-camera-retro text-danger"></i> NGOCBAO STUDIO</h5>
+                    <p class="small text-muted">Thương hiệu phân phối máy ảnh cao cấp nhập khẩu chính hãng tại Việt Nam. Lưu giữ những thước phim hoàn mỹ và nghệ thuật nhất.</p>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="mb-3">Thông tin chính sách</h5>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small">
+                        <li><a href="#" class="text-muted text-decoration-none hover-link"><i class="fa-solid fa-chevron-right me-1"></i> Chính sách bảo hành 24 tháng</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none hover-link"><i class="fa-solid fa-chevron-right me-1"></i> Đổi trả 1-1 trong 30 ngày</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none hover-link"><i class="fa-solid fa-chevron-right me-1"></i> Đăng ký nhận bản tin khuyến mãi</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <h5 class="mb-3">Liên hệ Studio</h5>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small">
+                        <li><i class="fa-solid fa-envelope me-2 text-danger"></i> support@ngocbao.vn</li>
+                        <li><i class="fa-solid fa-phone me-2 text-danger"></i> +84 (24) 8888 9999</li>
+                        <li><i class="fa-solid fa-location-dot me-2 text-danger"></i> Tòa nhà Ngọc Bảo, Cầu Giấy, Hà Nội, Việt Nam</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 small">
+                <p class="mb-0">&copy; @DateTime.Now.Year - NGOCBAO STUDIO. Thiết kế chuyên nghiệp bởi Team Antigravity.</p>
+                <div class="d-flex gap-3 fs-5">
+                    <a href="#" class="text-muted hover-link"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#" class="text-muted hover-link"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="text-muted hover-link"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <script>
+        // Handle opening/closing cart
+        function toggleCart(open) {
+            const drawer = document.getElementById('cart-drawer');
+            const overlay = document.getElementById('cart-overlay');
+            if (open) {
+                drawer.classList.add('open');
+                overlay.classList.add('open');
+                refreshCart();
+            } else {
+                drawer.classList.remove('open');
+                overlay.classList.remove('open');
+            }
+        }
+
+        // Refresh cart items via Ajax
+        function refreshCart() {
+            $.ajax({
+                url: '/Cart/GetCartDetails',
+                type: 'GET',
+                success: function(res) {
+                    // Update badge count
+                    document.getElementById('cart-badge-count').innerText = res.totalItems;
+                    
+                    // Update total price
+                    document.getElementById('cart-total-price').innerText = res.totalPrice;
+                    
+                    // Render items
+                    const container = document.getElementById('cart-items-container');
+                    if (res.items.length === 0) {
+                        container.innerHTML = `
+                            <div class="text-center text-muted my-5">
+                                <i class="fa-solid fa-cart-flatbed-suitcase fs-2 mb-3 text-secondary"></i>
+                                <p class="small">Giỏ hàng của bạn đang trống</p>
+                            </div>
+                        `;
+                    } else {
+                        let html = '';
+                        res.items.forEach(item => {
+                            html += `
+                                <div class="cart-drawer-item">
+                                    <div class="cart-item-img">
+                                        <img src="${item.avatarUrl || '/images/products/placeholder.png'}" alt="${item.productName}" />
+                                    </div>
+                                    <div class="cart-item-details">
+                                        <div class="cart-item-name" title="${item.productName}">${item.productName}</div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="cart-item-price">${item.price}</span>
+                                            <span class="cart-item-qty">x${item.quantity}</span>
+                                        </div>
+                                    </div>
+                                    <button class="cart-item-remove" onclick="removeFromCart(${item.productId})">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            `;
+                        });
+                        container.innerHTML = html;
+                    }
+                }
+            });
+        }
+
+        // Add to cart Ajax
+        function addToCart(productId) {
+            $.ajax({
+                url: '/Cart/AddToCart',
+                type: 'POST',
+                data: { productId: productId, quantity: 1 },
+                success: function(res) {
+                    if (res.success) {
+                        // Alert user briefly
+                        showToast(res.message);
+                        // Refresh badge
+                        document.getElementById('cart-badge-count').innerText = res.totalItems;
+                        // Auto open cart drawer
+                        toggleCart(true);
+                    } else {
+                        alert(res.message);
+                    }
+                }
+            });
+        }
+
+        // Remove from cart Ajax
+        function removeFromCart(productId) {
+            $.ajax({
+                url: '/Cart/RemoveFromCart',
+                type: 'POST',
+                data: { productId: productId },
+                success: function(res) {
+                    if (res.success) {
+                        refreshCart();
+                    }
+                }
+            });
+        }
+
+        function checkoutAlert() {
+            alert("Cảm ơn bạn đã lựa chọn Ngọc Bảo Studio! Hệ thống thanh toán trực tuyến đang được nâng cấp bảo mật.");
+        }
+
+        // Toast notifier
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.style.position = 'fixed';
+            toast.style.bottom = '30px';
+            toast.style.left = '30px';
+            toast.style.background = 'rgba(255, 62, 62, 0.95)';
+            toast.style.color = '#fff';
+            toast.style.padding = '12px 24px';
+            toast.style.borderRadius = '8px';
+            toast.style.boxShadow = '0 8px 24px rgba(0,0,0,0.4)';
+            toast.style.zIndex = '9999';
+            toast.style.fontSize = '0.9rem';
+            toast.style.fontWeight = '600';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check me-2"></i> ${msg}`;
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 2500);
+        }
+
+        // Document ready
+        $(document).ready(function() {
+            // Shortcut key '/' for search input focus
+            $(document).keydown(function(e) {
+                if (e.key === '/' && !$(e.target).is('input, textarea')) {
+                    e.preventDefault();
+                    $('.search-input').focus();
+                }
+            });
+            
+            // Load badge count initially
+            $.ajax({
+                url: '/Cart/GetCartDetails',
+                type: 'GET',
+                success: function(res) {
+                    document.getElementById('cart-badge-count').innerText = res.totalItems;
+                }
+            });
+        });
+    </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

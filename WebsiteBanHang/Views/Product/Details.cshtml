@@ -1,0 +1,97 @@
+@model WebsiteBanHang.Models.Product
+@{
+    ViewData["Title"] = "Chi tiết - " + Model.Name;
+}
+
+<div class="mb-4">
+    <a asp-action="Index" class="text-muted text-decoration-none hover-link small">
+        <i class="fa-solid fa-arrow-left me-1"></i> Trở về danh sách máy ảnh
+    </a>
+</div>
+
+<div class="row g-5">
+    <!-- Image Gallery Section -->
+    <div class="col-lg-6">
+        <div class="details-image-container mb-3">
+            <img id="main-product-image" src="@Model.AvatarUrl" alt="@Model.Name" class="w-100 img-fluid" style="aspect-ratio: 4/3; object-fit: cover;" />
+        </div>
+        
+        @if (Model.GalleryUrls != null && Model.GalleryUrls.Any())
+        {
+            <div class="row g-2">
+                <!-- Avatar thumbnail -->
+                <div class="col-3">
+                    <div class="gallery-thumbnail active" onclick="swapImage(this, '@Model.AvatarUrl')">
+                        <img src="@Model.AvatarUrl" alt="Avatar" class="w-100 h-100" style="object-fit: cover; aspect-ratio: 4/3;" />
+                    </div>
+                </div>
+                <!-- Gallery thumbnails -->
+                @foreach (var imgUrl in Model.GalleryUrls)
+                {
+                    <div class="col-3">
+                        <div class="gallery-thumbnail" onclick="swapImage(this, '@imgUrl')">
+                            <img src="@imgUrl" alt="Gallery" class="w-100 h-100" style="object-fit: cover; aspect-ratio: 4/3;" />
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Info Section -->
+    <div class="col-lg-6">
+        <div class="glass-card p-5">
+            <span class="badge bg-danger mb-3 py-2 px-3 small font-monospace">@ViewBag.CategoryName</span>
+            <h1 class="mb-3" style="font-size: 2.25rem;">@Model.Name</h1>
+            <h3 class="price-tag mb-4 fs-2">@Model.Price.ToString("N0") <span class="fs-6 text-muted">VNĐ</span></h3>
+            
+            <hr class="border-secondary my-4" />
+            
+            <h5 class="mb-3"><i class="fa-solid fa-file-invoice text-danger me-2"></i>Mô tả sản phẩm</h5>
+            <p class="text-muted leading-relaxed" style="text-align: justify; white-space: pre-line; font-size: 0.95rem;">@Model.Description</p>
+            
+            <hr class="border-secondary my-4" />
+            
+            <h5 class="mb-3"><i class="fa-solid fa-circle-info text-danger me-2"></i>Thông số cơ bản</h5>
+            <table class="spec-table">
+                <tr>
+                    <td>Dòng thiết bị</td>
+                    <td>@ViewBag.CategoryName</td>
+                </tr>
+                <tr>
+                    <td>Cảm biến & Xử lý</td>
+                    <td>Độ phân giải siêu cao cấp, lấy nét AI thông minh</td>
+                </tr>
+                <tr>
+                    <td>Tình trạng</td>
+                    <td><span class="text-success"><i class="fa-solid fa-circle-check me-1"></i> Sẵn hàng tại studio</span></td>
+                </tr>
+            </table>
+            
+            <div class="d-flex gap-3 mt-4 pt-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-premium-primary flex-grow-1 text-center">
+                    <i class="fa-solid fa-pen-to-square me-2"></i> Chỉnh sửa máy ảnh
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-premium-outline px-4 text-center text-danger border-danger">
+                    <i class="fa-solid fa-trash"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function swapImage(element, url) {
+            // Cập nhật đường dẫn ảnh lớn
+            document.getElementById('main-product-image').src = url;
+            
+            // Xử lý active class
+            var thumbnails = document.getElementsByClassName('gallery-thumbnail');
+            for (var i = 0; i < thumbnails.length; i++) {
+                thumbnails[i].classList.remove('active');
+            }
+            element.classList.add('active');
+        }
+    </script>
+}

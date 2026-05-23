@@ -1,0 +1,177 @@
+@model WebsiteBanHang.Models.Product
+@{
+    ViewData["Title"] = "Chỉnh sửa - " + Model.Name;
+}
+
+<div class="mb-4">
+    <a asp-action="Index" class="text-muted text-decoration-none hover-link small">
+        <i class="fa-solid fa-arrow-left me-1"></i> Hủy và trở về danh sách
+    </a>
+</div>
+
+<div class="max-width-form mx-auto">
+    <div class="glass-card p-5">
+        <h2 class="mb-4"><i class="fa-solid fa-pen-to-square text-danger me-2"></i>Chỉnh sửa thông tin máy ảnh</h2>
+        
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="AvatarUrl" />
+            
+            <div asp-validation-summary="ModelOnly" class="text-danger-premium mb-3"></div>
+            
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <!-- Tên sản phẩm -->
+                    <div class="mb-4">
+                        <label asp-for="Name" class="form-label text-muted small fw-bold"></label>
+                        <input asp-for="Name" class="form-control glass-form-control" />
+                        <span asp-validation-for="Name" class="text-danger-premium"></span>
+                    </div>
+
+                    <!-- Danh mục -->
+                    <div class="mb-4">
+                        <label asp-for="CategoryId" class="form-label text-muted small fw-bold"></label>
+                        <select asp-for="CategoryId" class="form-select glass-form-control glass-form-select" asp-items="ViewBag.Categories">
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger-premium"></span>
+                    </div>
+
+                    <!-- Giá bán -->
+                    <div class="mb-4">
+                        <label asp-for="Price" class="form-label text-muted small fw-bold"></label>
+                        <div class="input-group">
+                            <input asp-for="Price" class="form-control glass-form-control" type="number" />
+                            <span class="input-group-text glass-form-control border-start-0 text-muted">đ</span>
+                        </div>
+                        <span asp-validation-for="Price" class="text-danger-premium"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <!-- Avatar Upload -->
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold">Thay đổi ảnh đại diện</label>
+                        <div class="file-upload-wrapper mb-3">
+                            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                            <p class="small text-muted mb-1">Chọn ảnh đại diện mới</p>
+                            <p class="text-muted mb-0" style="font-size: 0.7rem;">.JPG, .JPEG, .PNG (Max 5MB)</p>
+                            <input asp-for="AvatarFile" type="file" accept=".jpg,.jpeg,.png" onchange="previewAvatar(this)" />
+                        </div>
+                        <span asp-validation-for="AvatarFile" class="text-danger-premium"></span>
+                        
+                        <!-- Xem trước ảnh -->
+                        <div class="text-center" id="avatar-preview-box">
+                            <p class="small text-muted mb-2">Ảnh hiện tại / Xem trước:</p>
+                            <img id="avatar-preview" src="@(string.IsNullOrEmpty(Model.AvatarUrl) ? "#" : Model.AvatarUrl)" alt="Preview" class="img-thumbnail bg-dark border-secondary rounded" style="max-height: 120px; aspect-ratio: 4/3; object-fit: cover;" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mô tả -->
+                <div class="col-12">
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label text-muted small fw-bold"></label>
+                        <textarea asp-for="Description" rows="5" class="form-control glass-form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger-premium"></span>
+                    </div>
+                </div>
+
+                <!-- Tải lên thêm ảnh bộ sưu tập -->
+                <div class="col-12">
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold">Tải lên thêm ảnh vào bộ sưu tập</label>
+                        <div class="file-upload-wrapper py-4 mb-3">
+                            <i class="fa-solid fa-images upload-icon mb-2" style="font-size: 2rem;"></i>
+                            <p class="small text-muted mb-1">Chọn các tệp hình ảnh mới để tải lên thêm</p>
+                            <input asp-for="GalleryFiles" type="file" multiple accept=".jpg,.jpeg,.png" onchange="previewGallery(this)" />
+                        </div>
+                        <span asp-validation-for="GalleryFiles" class="text-danger-premium"></span>
+
+                        <!-- Các hình ảnh hiện tại trong gallery -->
+                        @if (Model.GalleryUrls != null && Model.GalleryUrls.Any())
+                        {
+                            <div class="mb-2">
+                                <p class="small text-muted mb-2">Bộ sưu tập hiện tại:</p>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var imgUrl in Model.GalleryUrls)
+                                    {
+                                        <div style="width: 80px; height: 60px; border-radius: 4px; overflow: hidden; border: 1px solid var(--border-glass);">
+                                            <img src="@imgUrl" alt="Gallery item" style="width: 100%; height: 100%; object-fit: cover;" />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <div class="row g-2 mt-3 d-none" id="gallery-preview-box">
+                            <p class="small text-muted mb-2 col-12">Ảnh mới tải lên xem trước:</p>
+                            <div class="col-12 d-flex flex-wrap gap-2" id="gallery-preview-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-top border-secondary pt-4 mt-2 d-flex justify-content-end gap-3">
+                <a asp-action="Index" class="btn btn-premium-outline">Hủy bỏ</a>
+                <button type="submit" class="btn btn-premium-primary px-5">
+                    <i class="fa-solid fa-floppy-disk me-2"></i> Cập nhật sản phẩm
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .max-width-form {
+        max-width: 900px;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatar-preview').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function previewGallery(input) {
+            var container = document.getElementById('gallery-preview-container');
+            var box = document.getElementById('gallery-preview-box');
+            container.innerHTML = '';
+            
+            if (input.files && input.files.length > 0) {
+                box.classList.remove('d-none');
+                Array.from(input.files).forEach(file => {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var div = document.createElement('div');
+                        div.style.width = '80px';
+                        div.style.height = '60px';
+                        div.style.borderRadius = '4px';
+                        div.style.overflow = 'hidden';
+                        div.style.border = '1px solid var(--border-glass-hover)';
+                        
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'cover';
+                        
+                        div.appendChild(img);
+                        container.appendChild(div);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            } else {
+                box.classList.add('d-none');
+            }
+        }
+    </script>
+}
