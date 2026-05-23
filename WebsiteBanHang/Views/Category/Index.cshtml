@@ -1,0 +1,42 @@
+@model IEnumerable<WebsiteBanHang.Models.Category>
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+        <h1 class="premium-title mb-0">Quản lý danh mục</h1>
+        <p class="text-muted small mt-2">Xem danh sách các phân khúc máy ảnh nghệ thuật</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    @foreach (var item in Model)
+    {
+        string iconClass = item.Id switch
+        {
+            1 => "fa-circle-dot", // Mirrorless
+            2 => "fa-camera",     // DSLR
+            3 => "fa-box-archive", // Compact
+            _ => "fa-circle-info"  // Others
+        };
+
+        <div class="col-md-6 col-lg-4">
+            <div class="glass-card p-4 d-flex flex-column justify-content-between h-100">
+                <div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0">@item.Name</h4>
+                        <div class="fs-3 text-danger"><i class="fa-solid @iconClass"></i></div>
+                    </div>
+                    <p class="text-muted small mb-4" style="min-height: 48px;">@item.Description</p>
+                </div>
+                <div class="border-top border-secondary pt-3 d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">Phân khúc ID: #@item.Id</span>
+                    <a asp-controller="Product" asp-action="Index" asp-route-categoryId="@item.Id" class="btn btn-sm btn-premium-outline py-1 px-3">
+                        <i class="fa-solid fa-eye me-1"></i> Xem máy ảnh
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
